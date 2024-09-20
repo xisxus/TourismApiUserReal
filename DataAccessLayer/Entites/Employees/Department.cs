@@ -17,5 +17,8 @@ namespace DataAccessLayer.Entites.Employees
 
         public ICollection<Employee> Employees { get; set; }
         public ICollection<EmpDept> EmpDepts { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

@@ -33,5 +33,9 @@ namespace DataAccessLayer.Entites.Employees
 
         [NotMapped]
         public decimal NetSalary => BaseSalary + (Bonus ?? 0) + (Allowances ?? 0) + (OvertimePay ?? 0) - (Deductions ?? 0);
+
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

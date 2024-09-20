@@ -12,5 +12,8 @@ namespace DataAccessLayer.Entites.Employees
         public string DesignationTitle { get; set; }
 
         public ICollection<Employee> Employees { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

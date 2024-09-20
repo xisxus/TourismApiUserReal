@@ -25,6 +25,7 @@ namespace DataAccessLayer.Data
         public DbSet<PersonPicture> PersonPictures { get; set; }
 
         public DbSet<Person> People { get; set; }
+        public DbSet<City> Cities { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

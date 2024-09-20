@@ -31,16 +31,24 @@ namespace ApplicationLayer.Controllers
             return Ok(response);
         }
 
+
         [HttpPost("AssignRole")]
-        //[Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AssignRoleToUser(string userEmail, string roleName)
         {
             var response = await userAccount.AssignRoleToUser(userEmail, roleName);
             return Ok(response);
         }
 
+        [HttpPost("UnAssignRole")]
+        public async Task<IActionResult> UnassignRoleFromUser(string userEmail, string roleName)
+        {
+            var response = await userAccount.UnassignRoleFromUser(userEmail, roleName);
+            return Ok(response);
+        }
+
         [HttpGet("GetUserRoles/{userEmail}")]
-        //[Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUserRoles(string userEmail)
         {
             var response = await userAccount.GetUserRoles(userEmail);

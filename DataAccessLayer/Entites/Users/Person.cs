@@ -37,12 +37,13 @@ namespace DataAccessLayer.Entites.Users
         [StringLength(500)]
         public string? Address { get; set; }
 
+        public string PersonType { get; set; }
 
         public int CityId { get; set; }
 
         public string ApplicationUserId { get; set; }
 
-        //public City City { get; set; }
+        public City City { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
 
         public DateTime DateofBirth { get; set; }
@@ -59,5 +60,9 @@ namespace DataAccessLayer.Entites.Users
         //public ICollection<BlogPost> BlogPosts { get; set; }
         //public virtual ICollection<Review> Reviews { get; set; }
         //public virtual ICollection<Wishlist> Wishlists { get; set; }
+
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

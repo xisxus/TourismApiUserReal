@@ -46,6 +46,7 @@ namespace DataAccessLayer.Entites.Employees
 
 
         public ICollection<EmpDept> EmpDepts { get; set; }
+        public ICollection<EmployeeBank> EmployeeBanks { get; set; }
 
         public string ApplicationUserId { get; set; }  // Foreign key
 
@@ -61,5 +62,8 @@ namespace DataAccessLayer.Entites.Employees
         //public ICollection<EmployeeAttendance> Attendances { get; set; }
         //public ICollection<EmployeePerformance> Performances { get; set; }
         public ICollection<EmployeeDocument> Documents { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

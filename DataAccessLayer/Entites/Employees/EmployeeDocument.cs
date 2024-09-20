@@ -23,5 +23,8 @@ namespace DataAccessLayer.Entites.Employees
 
         [MaxLength(255)]
         public string Description { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

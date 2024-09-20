@@ -39,7 +39,7 @@ namespace BusinessLogicLayer.Service
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("AssignRoleToUser", connection))
+                using (var command = new SqlCommand("AssignRoleToUser2", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@UserEmail", userEmail);
@@ -55,6 +55,29 @@ namespace BusinessLogicLayer.Service
                 }
             }
         }
+
+        public async Task<GeneralResponse> UnassignRoleFromUser(string userEmail, string roleName)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("UnassignRoleFromUser2", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@UserEmail", userEmail);
+                    command.Parameters.AddWithValue("@RoleName", roleName);
+                    connection.Open();
+
+                    var result = (int)await command.ExecuteScalarAsync();
+
+                    if (result == -1) return new GeneralResponse(false, "User not found");
+                    if (result == -2) return new GeneralResponse(false, "Role not found");
+                    if (result == -3) return new GeneralResponse(false, "Role not assigned to the user");
+                    if (result == -4) return new GeneralResponse(false, "Cannot unassign User role");
+                    return new GeneralResponse(true, "Role unassigned from user successfully");
+                }
+            }
+        }
+
 
         public async Task<ServiceResponse.GeneralResponse> CreateAccount(UserDTO userDTO)
         {
@@ -145,6 +168,8 @@ namespace BusinessLogicLayer.Service
                 }
             }
         }
+
+
 
         public async Task<GeneralResponseData<List<string>>> GetUserRoles(string userEmail)
         {

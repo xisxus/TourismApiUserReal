@@ -4,6 +4,7 @@ using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240920144907_unAssignRoleREAL")]
+    partial class unAssignRoleREAL
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,9 +33,6 @@ namespace DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DepartmentId"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("DeptName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -42,9 +42,6 @@ namespace DataAccessLayer.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("DepartmentId");
 
@@ -59,16 +56,10 @@ namespace DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DesignationId"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("DesignationTitle")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("DesignationId");
 
@@ -83,17 +74,11 @@ namespace DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmpDeptId"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("EmpDeptId");
 
@@ -115,9 +100,6 @@ namespace DataAccessLayer.Migrations
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
@@ -144,9 +126,6 @@ namespace DataAccessLayer.Migrations
                     b.Property<bool>("MaritalStatus")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("EmployeeId");
 
                     b.HasIndex("ApplicationUserId");
@@ -158,46 +137,6 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entites.Employees.EmployeeBank", b =>
-                {
-                    b.Property<int>("EmployeeBankID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeBankID"));
-
-                    b.Property<string>("AccountNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AccountType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BankName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BranchName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("EmployeeID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("EmployeeBankID");
-
-                    b.HasIndex("EmployeeID");
-
-                    b.ToTable("EmployeeBank");
-                });
-
             modelBuilder.Entity("DataAccessLayer.Entites.Employees.EmployeeDocument", b =>
                 {
                     b.Property<int>("DocumentId")
@@ -205,9 +144,6 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DocumentId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -226,9 +162,6 @@ namespace DataAccessLayer.Migrations
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("UploadDate")
                         .HasColumnType("datetime2");
@@ -257,9 +190,6 @@ namespace DataAccessLayer.Migrations
                     b.Property<decimal?>("Bonus")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<decimal?>("Deductions")
                         .HasColumnType("decimal(18, 2)");
 
@@ -271,9 +201,6 @@ namespace DataAccessLayer.Migrations
 
                     b.Property<decimal?>("OvertimePay")
                         .HasColumnType("decimal(18, 2)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("SalaryId");
 
@@ -350,23 +277,6 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entites.Users.City", b =>
-                {
-                    b.Property<int>("CityId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CityId"));
-
-                    b.Property<string>("CityName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CityId");
-
-                    b.ToTable("Cities");
-                });
-
             modelBuilder.Entity("DataAccessLayer.Entites.Users.Person", b =>
                 {
                     b.Property<int>("PersonId")
@@ -385,9 +295,6 @@ namespace DataAccessLayer.Migrations
 
                     b.Property<int>("CityId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateofBirth")
                         .HasColumnType("datetime2");
@@ -421,18 +328,9 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(9)
                         .HasColumnType("nvarchar(9)");
 
-                    b.Property<string>("PersonType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("PersonId");
 
                     b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("CityId");
 
                     b.ToTable("People");
                 });
@@ -637,17 +535,6 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Designation");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entites.Employees.EmployeeBank", b =>
-                {
-                    b.HasOne("DataAccessLayer.Entites.Employees.Employee", "Employee")
-                        .WithMany("EmployeeBanks")
-                        .HasForeignKey("EmployeeID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
             modelBuilder.Entity("DataAccessLayer.Entites.Employees.EmployeeDocument", b =>
                 {
                     b.HasOne("DataAccessLayer.Entites.Employees.Employee", "Employee")
@@ -678,15 +565,7 @@ namespace DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccessLayer.Entites.Users.City", "City")
-                        .WithMany()
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("ApplicationUser");
-
-                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Entites.Users.PersonPicture", b =>
@@ -768,8 +647,6 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Documents");
 
                     b.Navigation("EmpDepts");
-
-                    b.Navigation("EmployeeBanks");
 
                     b.Navigation("Salaries");
                 });
