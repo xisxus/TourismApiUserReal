@@ -47,5 +47,35 @@ namespace ApplicationLayer.Controllers
             var response = await employee.GetALlEmployee();
             return Ok(response);
         }
+
+        [HttpGet("GetAllFullEmployees")]
+        public async Task<IActionResult> GetAllFullEmployees()
+        {
+            var response = await employee.GetAllFullEmployee();
+            return Ok(response);
+        }
+
+        [HttpGet("GetAllFullEmployeesById")]
+        public async Task<IActionResult> GetAllFullEmployees(int id)
+        {
+            var response = await employee.GetAllFullEmployeeById(id);
+            return Ok(response);
+        }
+
+        [HttpPost("CreateEmployeeReal")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateEmployeeReal(EmployeeCreateDTO employeeDTO)
+        {
+            var response = await employee.CreateEmployee(employeeDTO);
+            return Ok(response);
+        }
+
+        [HttpPut("EditEmployeeReal")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditEmployeeReal(EmployeeEditDTO employeeDTO , int id)
+        {
+            var response = await employee.EditEmployee(employeeDTO, id);
+            return Ok(response);
+        }
     }
 }

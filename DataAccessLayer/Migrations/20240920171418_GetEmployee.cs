@@ -10,13 +10,13 @@ namespace DataAccessLayer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(@" ");
+            //migrationBuilder.Sql(@" ");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("DROP PROCEDURE IF EXISTS GetEmp");
+            //migrationBuilder.Sql("DROP PROCEDURE IF EXISTS GetEmp");
         }
     }
 }

@@ -16,6 +16,8 @@ namespace DataAccessLayer.DTOs
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
+        public DateTime? UploadDate { get; set; }
+        public string? DocumentDescription { get; set; }
     }
 
 }

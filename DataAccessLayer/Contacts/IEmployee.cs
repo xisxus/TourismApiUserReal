@@ -15,5 +15,13 @@ namespace DataAccessLayer.Contacts
         Task<GeneralResponse> InsertEmployee(EmployeeDTO employeeDTO);
         Task<GeneralResponse> UpdateEmployee(int Id ,EmployeeDTO employeeDTO);
         Task<GeneralResponse> DeleteEmployee(int employeeId);
+
+        Task<ServiceResponse.GeneralResponseData<List<EmpDTO>>> GetAllFullEmployee();
+
+        Task<ServiceResponse.GeneralResponseData<List<EmpDTO>>> GetAllFullEmployeeById(int id);
+
+        Task<ServiceResponse.GeneralResponse> CreateEmployee(EmployeeCreateDTO employeeDTO);
+
+        Task<ServiceResponse.GeneralResponse> EditEmployee(EmployeeEditDTO employeeDTO, int id);
     }
 }
