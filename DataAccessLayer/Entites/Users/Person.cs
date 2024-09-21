@@ -20,7 +20,7 @@ namespace DataAccessLayer.Entites.Users
         public string LastName { get; set; }
 
         [StringLength(6)]
-        public string Gender { get; set; }
+        public string? Gender { get; set; }
 
         [Required]
         [StringLength(17)]

@@ -65,7 +65,18 @@ builder.Services.AddScoped<IEmpDept, EmpDeptRepository>();
 builder.Services.AddScoped<IEmployeeDocument, EmployeeDocumentRepository>();
 builder.Services.AddScoped<IEmployeeSalary, EmployeeSalaryRepository>();
 builder.Services.AddScoped<IEmployeeBank, EmployeeBankRepository>();
+builder.Services.AddScoped<IPerson, PersonRepository>();
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 
 
@@ -83,12 +94,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors(cors =>
-{
-    cors.AllowAnyHeader();
-    cors.AllowAnyMethod();
-    cors.AllowAnyOrigin();
-});
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
