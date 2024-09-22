@@ -19,6 +19,27 @@ namespace ApplicationLayer.Controllers
             _employeeSalariesRepository = employeeSalariesRepository;
         }
 
+
+        [HttpPost("insertBanks")]
+        public async Task<IActionResult> InsertEmployeeBanks([FromBody] List<EmployeeBankDTO> employeeBankDTOs)
+        {
+            if (employeeBankDTOs == null || employeeBankDTOs.Count == 0)
+            {
+                return BadRequest("No bank details provided.");
+            }
+
+            var response = await _employeeBankRepository.InsertEmployeeBanks(employeeBankDTOs);
+
+            if (response.Flag)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
+        }
+
+
+
         [HttpPost("bank")]
         public async Task<IActionResult> CreateEmployeeBank([FromBody] EmployeeBankDTO employeeBankDTO)
         {

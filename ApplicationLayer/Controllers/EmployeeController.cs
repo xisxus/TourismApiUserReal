@@ -64,9 +64,9 @@ namespace ApplicationLayer.Controllers
 
         [HttpPost("CreateEmployeeReal")]
         //[Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateEmployeeReal(EmployeeCreateDTO employeeDTO)
+        public async Task<IActionResult> CreateEmployeeReal( EmployeeCreateDTO employeeDTO,  IFormFile document)
         {
-            var response = await employee.CreateEmployee(employeeDTO);
+            var response = await employee.CreateEmployeeWithDocumentAsync(employeeDTO, document);
             return Ok(response);
         }
 
@@ -75,6 +75,23 @@ namespace ApplicationLayer.Controllers
         public async Task<IActionResult> EditEmployeeReal(EmployeeEditDTO employeeDTO , int id)
         {
             var response = await employee.EditEmployee(employeeDTO, id);
+            return Ok(response);
+        }
+
+
+        [HttpPost("CreateEmployeeWD")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateEmployeeWDl(EmployeeCreateDTOWD employeeDTO)
+        {
+            var response = await employee.CreateEmployeeWD(employeeDTO);
+            return Ok(response);
+        }
+
+        [HttpPut("EditEmployeeWD")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditEmployeeWD(EmployeeCreateDTOWD employeeDTO, int id)
+        {
+            var response = await employee.EditEmployeeWD(employeeDTO, id);
             return Ok(response);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.DTOs;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +21,12 @@ namespace DataAccessLayer.Contacts
 
         Task<ServiceResponse.GeneralResponseData<List<EmpDTO>>> GetAllFullEmployeeById(int id);
 
-        Task<ServiceResponse.GeneralResponse> CreateEmployee(EmployeeCreateDTO employeeDTO);
+        Task<ServiceResponse.GeneralResponse> CreateEmployeeWithDocumentAsync(EmployeeCreateDTO employeeDTO, IFormFile document);
 
         Task<ServiceResponse.GeneralResponse> EditEmployee(EmployeeEditDTO employeeDTO, int id);
+
+        Task<ServiceResponse.GeneralResponse> EditEmployeeWD(EmployeeCreateDTOWD employeeDTO, int id);
+
+        Task<ServiceResponse.GeneralResponseSingle> CreateEmployeeWD(EmployeeCreateDTOWD employeeDTO);
     }
 }

@@ -1,7 +1,9 @@
 ﻿using DataAccessLayer.Contacts;
 using DataAccessLayer.DTOs;
 using DataAccessLayer.Entites.Employees;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -374,15 +376,47 @@ namespace BusinessLogicLayer.Service
         }
 
 
-        public async Task<ServiceResponse.GeneralResponse> CreateEmployee(EmployeeCreateDTO employeeDTO)
+        public async Task<ServiceResponse.GeneralResponse> CreateEmployeeWithDocumentAsync(EmployeeCreateDTO employeeDTO, IFormFile document)
         {
+            if (document != null && document.Length > 0)
+            {
+                // 1. Save the document to the uploads folder
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                var fileExtension = Path.GetExtension(document.FileName);
+                var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await document.CopyToAsync(fileStream);
+                }
+
+                // 2. Add the document information to employeeDTO
+                employeeDTO.EmployeeDocuments = new List<EmployeeDocumentDTO2>
+        {
+            new EmployeeDocumentDTO2
+            {
+                DocumentUrl = filePath, // Save the file path to the DocumentUrl property
+                DocumentType = fileExtension, // Save the file extension as the DocumentType
+                UploadDate = DateTime.UtcNow,
+                Description = "Uploaded document"
+            }
+        };
+            }
+
+            // 3. Call the stored procedure to save employee info and document details in the database
             using (var connection = new SqlConnection(_connectionString))
             {
                 using (var command = new SqlCommand("InsertEmployeeFull", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
-                    // Employee information
+                    // Add employee parameters
                     command.Parameters.AddWithValue("@EmployeeCode", employeeDTO.EmployeeCode);
                     command.Parameters.AddWithValue("@DateOfBirth", employeeDTO.DateOfBirth);
                     command.Parameters.AddWithValue("@JoiningDate", employeeDTO.JoiningDate);
@@ -392,7 +426,7 @@ namespace BusinessLogicLayer.Service
                     command.Parameters.AddWithValue("@DepartmentId", employeeDTO.DepartmentId);
                     command.Parameters.AddWithValue("@ApplicationUserId", employeeDTO.ApplicationUserId);
 
-                    // EmpDepts
+                    // Add EmpDepts table parameter
                     var empDeptsTable = new DataTable();
                     empDeptsTable.Columns.Add("DepartmentId", typeof(int));
                     foreach (var dept in employeeDTO.EmpDepts)
@@ -403,7 +437,7 @@ namespace BusinessLogicLayer.Service
                     empDeptsParam.SqlDbType = SqlDbType.Structured;
                     empDeptsParam.TypeName = "dbo.EmpDeptsType";
 
-                    // EmployeeBanks
+                    // Add EmployeeBank table parameter
                     var employeeBanksTable = new DataTable();
                     employeeBanksTable.Columns.Add("BankName", typeof(string));
                     employeeBanksTable.Columns.Add("AccountNumber", typeof(string));
@@ -417,7 +451,7 @@ namespace BusinessLogicLayer.Service
                     employeeBanksParam.SqlDbType = SqlDbType.Structured;
                     employeeBanksParam.TypeName = "dbo.EmployeeBankType";
 
-                    // EmployeeDocuments
+                    // Add EmployeeDocuments table parameter
                     var employeeDocumentsTable = new DataTable();
                     employeeDocumentsTable.Columns.Add("DocumentUrl", typeof(string));
                     employeeDocumentsTable.Columns.Add("DocumentType", typeof(string));
@@ -431,7 +465,7 @@ namespace BusinessLogicLayer.Service
                     employeeDocumentsParam.SqlDbType = SqlDbType.Structured;
                     employeeDocumentsParam.TypeName = "dbo.EmployeeDocumentsType";
 
-                    // EmployeeSalaries
+                    // Add EmployeeSalaries table parameter
                     var employeeSalariesTable = new DataTable();
                     employeeSalariesTable.Columns.Add("EffectiveDate", typeof(DateTime));
                     employeeSalariesTable.Columns.Add("BaseSalary", typeof(decimal));
@@ -450,14 +484,15 @@ namespace BusinessLogicLayer.Service
                     // Execute the command
                     connection.Open();
                     var result = await command.ExecuteNonQueryAsync();
-                    if (result < 0)
+                    if (result > 0)
                     {
-                        return new GeneralResponse(true, "Employee inserted successfully");
+                        return new GeneralResponse(true, "Employee and document information inserted successfully.");
                     }
-                    return new GeneralResponse(false, "Employee insertion failed");
+                    return new GeneralResponse(false, "Employee insertion failed.");
                 }
             }
         }
+
 
 
         public async Task<ServiceResponse.GeneralResponse> EditEmployee(EmployeeEditDTO employeeDTO, int id)
@@ -548,6 +583,172 @@ namespace BusinessLogicLayer.Service
             return new ServiceResponse.GeneralResponse(true, "Updated Successfull");
            
         }
+
+
+
+        public async Task<ServiceResponse.GeneralResponseSingle> CreateEmployeeWD(EmployeeCreateDTOWD employeeDTO)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("InsertEmployeeFull", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Add employee parameters
+                    command.Parameters.AddWithValue("@EmployeeCode", employeeDTO.EmployeeCode);
+                    command.Parameters.AddWithValue("@DateOfBirth", employeeDTO.DateOfBirth);
+                    command.Parameters.AddWithValue("@JoiningDate", employeeDTO.JoiningDate);
+                    command.Parameters.AddWithValue("@MaritalStatus", employeeDTO.MaritalStatus);
+                    command.Parameters.AddWithValue("@IdentityCard", employeeDTO.IdentityCard);
+                    command.Parameters.AddWithValue("@DesignationId", employeeDTO.DesignationId);
+                    command.Parameters.AddWithValue("@DepartmentId", employeeDTO.DepartmentId);
+                    command.Parameters.AddWithValue("@ApplicationUserId", employeeDTO.ApplicationUserId);
+
+                    // Add EmpDepts table parameter
+                    var empDeptsTable = new DataTable();
+                    empDeptsTable.Columns.Add("DepartmentId", typeof(int));
+                    foreach (var dept in employeeDTO.EmpDepts)
+                    {
+                        empDeptsTable.Rows.Add(dept.DepartmentId);
+                    }
+                    var empDeptsParam = command.Parameters.AddWithValue("@EmpDepts", empDeptsTable);
+                    empDeptsParam.SqlDbType = SqlDbType.Structured;
+                    empDeptsParam.TypeName = "dbo.EmpDeptsType";
+
+                    // Add EmployeeBank table parameter
+                    var employeeBanksTable = new DataTable();
+                    employeeBanksTable.Columns.Add("BankName", typeof(string));
+                    employeeBanksTable.Columns.Add("AccountNumber", typeof(string));
+                    employeeBanksTable.Columns.Add("BranchName", typeof(string));
+                    employeeBanksTable.Columns.Add("AccountType", typeof(string));
+                    foreach (var bank in employeeDTO.EmployeeBanks)
+                    {
+                        employeeBanksTable.Rows.Add(bank.BankName, bank.AccountNumber, bank.BranchName, bank.AccountType);
+                    }
+                    var employeeBanksParam = command.Parameters.AddWithValue("@EmployeeBank", employeeBanksTable);
+                    employeeBanksParam.SqlDbType = SqlDbType.Structured;
+                    employeeBanksParam.TypeName = "dbo.EmployeeBankType";
+
+                    // Add EmployeeSalaries table parameter
+                    var employeeSalariesTable = new DataTable();
+                    employeeSalariesTable.Columns.Add("EffectiveDate", typeof(DateTime));
+                    employeeSalariesTable.Columns.Add("BaseSalary", typeof(decimal));
+                    employeeSalariesTable.Columns.Add("Allowances", typeof(decimal));
+                    employeeSalariesTable.Columns.Add("OvertimePay", typeof(decimal));
+                    employeeSalariesTable.Columns.Add("Bonus", typeof(decimal));
+                    employeeSalariesTable.Columns.Add("Deductions", typeof(decimal));
+                    foreach (var salary in employeeDTO.EmployeeSalaries)
+                    {
+                        employeeSalariesTable.Rows.Add(salary.EffectiveDate, salary.BaseSalary, salary.Allowances, salary.OvertimePay, salary.Bonus, salary.Deductions);
+                    }
+                    var employeeSalariesParam = command.Parameters.AddWithValue("@EmployeeSalaries", employeeSalariesTable);
+                    employeeSalariesParam.SqlDbType = SqlDbType.Structured;
+                    employeeSalariesParam.TypeName = "dbo.EmployeeSalariesType";
+
+                    // Open the connection and execute the command
+                    connection.Open();
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.Read())
+                        {
+                            var employeeDTO2 = new EmployeeDTO
+                            {
+                                EmployeeId = reader.GetInt32(0),
+                                EmployeeCode = reader.GetString(1),
+                                DateOfBirth = reader.GetDateTime(2),
+                                JoiningDate = reader.GetDateTime(3),
+                                MaritalStatus = reader.GetBoolean(4),
+                                IdentityCard = reader.GetString(5),
+                                DesignationId = reader.GetInt32(6),
+                                DepartmentId = reader.GetInt32(7),
+                                ApplicationUserId = reader.GetString(8)
+                            };
+
+                            return new ServiceResponse.GeneralResponseSingle(true, "Employee information inserted successfully.", employeeDTO2);
+                        }
+                    }
+
+                    return new ServiceResponse.GeneralResponseSingle(false, "Employee insertion failed.");
+                }
+            }
+        }
+
+
+        public async Task<ServiceResponse.GeneralResponse> EditEmployeeWD(EmployeeCreateDTOWD employeeDTO, int id)
+        {
+            if (id != employeeDTO.EmployeeId)
+            {
+                return new ServiceResponse.GeneralResponse(false, "ID mismatch");
+            }
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("UpdateEmployeeFull", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Employee information
+                    command.Parameters.AddWithValue("@EmployeeId", employeeDTO.EmployeeId);
+                    command.Parameters.AddWithValue("@EmployeeCode", employeeDTO.EmployeeCode);
+                    command.Parameters.AddWithValue("@DateOfBirth", employeeDTO.DateOfBirth);
+                    command.Parameters.AddWithValue("@JoiningDate", employeeDTO.JoiningDate);
+                    command.Parameters.AddWithValue("@MaritalStatus", employeeDTO.MaritalStatus);
+                    command.Parameters.AddWithValue("@IdentityCard", employeeDTO.IdentityCard);
+                    command.Parameters.AddWithValue("@DesignationId", employeeDTO.DesignationId);
+                    command.Parameters.AddWithValue("@DepartmentId", employeeDTO.DepartmentId);
+                    command.Parameters.AddWithValue("@ApplicationUserId", employeeDTO.ApplicationUserId);
+
+                    // EmpDepts
+                    var empDeptsTable = new DataTable();
+                    empDeptsTable.Columns.Add("DepartmentId", typeof(int));
+                    foreach (var dept in employeeDTO.EmpDepts)
+                    {
+                        empDeptsTable.Rows.Add(dept.DepartmentId);
+                    }
+                    var empDeptsParam = command.Parameters.AddWithValue("@EmpDepts", empDeptsTable);
+                    empDeptsParam.SqlDbType = SqlDbType.Structured;
+                    empDeptsParam.TypeName = "dbo.EmpDeptsType";
+
+                    // EmployeeBanks
+                    var employeeBanksTable = new DataTable();
+                    employeeBanksTable.Columns.Add("BankName", typeof(string));
+                    employeeBanksTable.Columns.Add("AccountNumber", typeof(string));
+                    employeeBanksTable.Columns.Add("BranchName", typeof(string));
+                    employeeBanksTable.Columns.Add("AccountType", typeof(string));
+                    foreach (var bank in employeeDTO.EmployeeBanks)
+                    {
+                        employeeBanksTable.Rows.Add(bank.BankName, bank.AccountNumber, bank.BranchName, bank.AccountType);
+                    }
+                    var employeeBanksParam = command.Parameters.AddWithValue("@EmployeeBank", employeeBanksTable);
+                    employeeBanksParam.SqlDbType = SqlDbType.Structured;
+                    employeeBanksParam.TypeName = "dbo.EmployeeBankType";
+
+                    // EmployeeSalaries
+                    var employeeSalariesTable = new DataTable();
+                    employeeSalariesTable.Columns.Add("EffectiveDate", typeof(DateTime));
+                    employeeSalariesTable.Columns.Add("BaseSalary", typeof(decimal));
+                    employeeSalariesTable.Columns.Add("Allowances", typeof(decimal));
+                    employeeSalariesTable.Columns.Add("OvertimePay", typeof(decimal));
+                    employeeSalariesTable.Columns.Add("Bonus", typeof(decimal));
+                    employeeSalariesTable.Columns.Add("Deductions", typeof(decimal));
+                    foreach (var salary in employeeDTO.EmployeeSalaries)
+                    {
+                        employeeSalariesTable.Rows.Add(salary.EffectiveDate, salary.BaseSalary, salary.Allowances, salary.OvertimePay, salary.Bonus, salary.Deductions);
+                    }
+                    var employeeSalariesParam = command.Parameters.AddWithValue("@EmployeeSalaries", employeeSalariesTable);
+                    employeeSalariesParam.SqlDbType = SqlDbType.Structured;
+                    employeeSalariesParam.TypeName = "dbo.EmployeeSalariesType";
+
+                    // Execute the stored procedure
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+
+            return new ServiceResponse.GeneralResponse(true, "Employee information updated successfully.");
+        }
+
+
 
 
     }

@@ -9,6 +9,7 @@ namespace DataAccessLayer.Contacts
 {
     public interface IEmployeeBank
     {
+        Task<ServiceResponse.GeneralResponseData<List<EmployeeBankDTO>>> InsertEmployeeBanks(List<EmployeeBankDTO> employeeBankDTOs);
         Task<ServiceResponse.GeneralResponse> InsertEmployeeBank(EmployeeBankDTO employeeBankDTO);
         Task<ServiceResponse.GeneralResponse> UpdateEmployeeBank(int id, EmployeeBankDTO employeeBankDTO);
         Task<ServiceResponse.GeneralResponse> DeleteEmployeeBank(int employeeBankID);

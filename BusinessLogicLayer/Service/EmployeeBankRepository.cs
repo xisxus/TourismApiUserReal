@@ -23,6 +23,48 @@ namespace BusinessLogicLayer.Service
             _connectionString = _config.GetConnectionString("con");
         }
 
+
+        public async Task<ServiceResponse.GeneralResponseData<List<EmployeeBankDTO>>> InsertEmployeeBanks(List<EmployeeBankDTO> employeeBankDTOs)
+        {
+            var insertedBanks = new List<EmployeeBankDTO>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                foreach (var employeeBankDTO in employeeBankDTOs)
+                {
+                    using (var command = new SqlCommand("SP_InsertEmployeeBank", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@EmployeeID", employeeBankDTO.EmployeeID);
+                        command.Parameters.AddWithValue("@BankName", employeeBankDTO.BankName);
+                        command.Parameters.AddWithValue("@AccountNumber", employeeBankDTO.AccountNumber);
+                        command.Parameters.AddWithValue("@BranchName", employeeBankDTO.BranchName);
+                        command.Parameters.AddWithValue("@AccountType", employeeBankDTO.AccountType);
+
+                        var result = await command.ExecuteNonQueryAsync();
+
+                        if (result > 0)
+                        {
+                            // If insertion is successful, add to the list
+                            insertedBanks.Add(employeeBankDTO);
+                        }
+                        else
+                        {
+                            // Handle failure for individual insertions if necessary
+                            return new ServiceResponse.GeneralResponseData<List<EmployeeBankDTO>>(false, "Some bank details insertion failed", null);
+                        }
+                    }
+                }
+            }
+
+            return new ServiceResponse.GeneralResponseData<List<EmployeeBankDTO>>(true, "All bank details inserted successfully", insertedBanks);
+        }
+
+
+
+
         public async Task<GeneralResponse> InsertEmployeeBank(EmployeeBankDTO employeeBankDTO)
         {
             using (var connection = new SqlConnection(_connectionString))
