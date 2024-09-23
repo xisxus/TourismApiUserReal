@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,7 +39,8 @@ namespace DataAccessLayer.DTOs
 
     public class EmployeeDocumentDTO2
     {
-        public string DocumentUrl { get; set; }
+        public IFormFile formFile { get; set; }
+        public string? DocumentUrl { get; set; }
         public string DocumentType { get; set; }
         public DateTime UploadDate { get; set; }
         public string Description { get; set; }

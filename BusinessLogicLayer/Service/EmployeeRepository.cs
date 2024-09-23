@@ -590,12 +590,14 @@ namespace BusinessLogicLayer.Service
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("InsertEmployeeFull", connection))
+                using (var command = new SqlCommand("InsertNewEmployee2", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
                     // Add employee parameters
                     command.Parameters.AddWithValue("@EmployeeCode", employeeDTO.EmployeeCode);
+                    command.Parameters.AddWithValue("@FirstName", employeeDTO.FirstName);  // Pass FirstName
+                    command.Parameters.AddWithValue("@LastName", employeeDTO.LastName);    // Pass LastName
                     command.Parameters.AddWithValue("@DateOfBirth", employeeDTO.DateOfBirth);
                     command.Parameters.AddWithValue("@JoiningDate", employeeDTO.JoiningDate);
                     command.Parameters.AddWithValue("@MaritalStatus", employeeDTO.MaritalStatus);
@@ -603,17 +605,6 @@ namespace BusinessLogicLayer.Service
                     command.Parameters.AddWithValue("@DesignationId", employeeDTO.DesignationId);
                     command.Parameters.AddWithValue("@DepartmentId", employeeDTO.DepartmentId);
                     command.Parameters.AddWithValue("@ApplicationUserId", employeeDTO.ApplicationUserId);
-
-                    // Add EmpDepts table parameter
-                    var empDeptsTable = new DataTable();
-                    empDeptsTable.Columns.Add("DepartmentId", typeof(int));
-                    foreach (var dept in employeeDTO.EmpDepts)
-                    {
-                        empDeptsTable.Rows.Add(dept.DepartmentId);
-                    }
-                    var empDeptsParam = command.Parameters.AddWithValue("@EmpDepts", empDeptsTable);
-                    empDeptsParam.SqlDbType = SqlDbType.Structured;
-                    empDeptsParam.TypeName = "dbo.EmpDeptsType";
 
                     // Add EmployeeBank table parameter
                     var employeeBanksTable = new DataTable();
@@ -627,7 +618,7 @@ namespace BusinessLogicLayer.Service
                     }
                     var employeeBanksParam = command.Parameters.AddWithValue("@EmployeeBank", employeeBanksTable);
                     employeeBanksParam.SqlDbType = SqlDbType.Structured;
-                    employeeBanksParam.TypeName = "dbo.EmployeeBankType";
+                    employeeBanksParam.TypeName = "dbo.NewEmployeeBankType2";
 
                     // Add EmployeeSalaries table parameter
                     var employeeSalariesTable = new DataTable();
@@ -643,35 +634,43 @@ namespace BusinessLogicLayer.Service
                     }
                     var employeeSalariesParam = command.Parameters.AddWithValue("@EmployeeSalaries", employeeSalariesTable);
                     employeeSalariesParam.SqlDbType = SqlDbType.Structured;
-                    employeeSalariesParam.TypeName = "dbo.EmployeeSalariesType";
+                    employeeSalariesParam.TypeName = "dbo.NewEmployeeSalariesType2";
+
+                    // Output parameter for the new EmployeeId
+                    var employeeIdParam = new SqlParameter("@NewEmployeeId", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(employeeIdParam);
 
                     // Open the connection and execute the command
-                    connection.Open();
-                    using (var reader = await command.ExecuteReaderAsync())
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+
+                    // Retrieve the new EmployeeId from the output parameter
+                    var newEmployeeId = (int)command.Parameters["@NewEmployeeId"].Value;
+
+                    // Return the employee details including EmployeeId, FirstName, LastName
+                    var employeeDTO2 = new EmployeeDTO
                     {
-                        if (reader.Read())
-                        {
-                            var employeeDTO2 = new EmployeeDTO
-                            {
-                                EmployeeId = reader.GetInt32(0),
-                                EmployeeCode = reader.GetString(1),
-                                DateOfBirth = reader.GetDateTime(2),
-                                JoiningDate = reader.GetDateTime(3),
-                                MaritalStatus = reader.GetBoolean(4),
-                                IdentityCard = reader.GetString(5),
-                                DesignationId = reader.GetInt32(6),
-                                DepartmentId = reader.GetInt32(7),
-                                ApplicationUserId = reader.GetString(8)
-                            };
+                        EmployeeId = newEmployeeId,
+                        EmployeeCode = employeeDTO.EmployeeCode,
+                        FirstName = employeeDTO.FirstName,   // Include FirstName
+                        LastName = employeeDTO.LastName,     // Include LastName
+                        DateOfBirth = employeeDTO.DateOfBirth,
+                        JoiningDate = employeeDTO.JoiningDate,
+                        MaritalStatus = employeeDTO.MaritalStatus,
+                        IdentityCard = employeeDTO.IdentityCard,
+                        DesignationId = employeeDTO.DesignationId,
+                        DepartmentId = employeeDTO.DepartmentId,
+                        ApplicationUserId = employeeDTO.ApplicationUserId
+                    };
 
-                            return new ServiceResponse.GeneralResponseSingle(true, "Employee information inserted successfully.", employeeDTO2);
-                        }
-                    }
-
-                    return new ServiceResponse.GeneralResponseSingle(false, "Employee insertion failed.");
+                    return new ServiceResponse.GeneralResponseSingle(true, "Employee information inserted successfully.", employeeDTO2);
                 }
             }
         }
+
 
 
         public async Task<ServiceResponse.GeneralResponse> EditEmployeeWD(EmployeeCreateDTOWD employeeDTO, int id)
