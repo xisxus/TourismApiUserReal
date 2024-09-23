@@ -14,6 +14,9 @@ namespace DataAccessLayer.Entites.Employees
         [Key]
         public int EmployeeId { get; set; }
 
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
         [Required]
         [MaxLength(50)]
         public string EmployeeCode { get; set; }

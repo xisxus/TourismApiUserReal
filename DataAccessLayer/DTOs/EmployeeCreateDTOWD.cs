@@ -10,6 +10,8 @@ namespace DataAccessLayer.DTOs
     {
         public int? EmployeeId { get; set; }
         public string EmployeeCode { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public DateTime JoiningDate { get; set; }
         public bool MaritalStatus { get; set; }
@@ -18,7 +20,7 @@ namespace DataAccessLayer.DTOs
         public int DepartmentId { get; set; }
         public string ApplicationUserId { get; set; }
 
-        public List<EmpDeptDTO2WD> EmpDepts { get; set; }
+        public List<EmpDeptDTO2WD>? EmpDepts { get; set; }
         public List<EmployeeBankDTO2WD> EmployeeBanks { get; set; }
       
         public List<EmployeeSalaryDTO2WD> EmployeeSalaries { get; set; }

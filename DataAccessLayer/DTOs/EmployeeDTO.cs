@@ -14,6 +14,8 @@ namespace DataAccessLayer.DTOs
     {
         public int EmployeeId { get; set; }
         public string EmployeeCode { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public DateTime JoiningDate { get; set; }
         public bool MaritalStatus { get; set; }
