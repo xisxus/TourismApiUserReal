@@ -316,11 +316,11 @@ namespace BusinessLogicLayer.Service
             }
         }
 
-        public async Task<ServiceResponse.GeneralResponse> InsertEmployee(EmployeeDTO employeeDTO)
+        public async Task<ServiceResponse.GeneralResponseSingle> InsertEmployee(EmployeeDTO employeeDTO)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("SP_InsertEmployee", connection))
+                using (var command = new SqlCommand("SP_InsertEmployeeIdentity", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@EmployeeCode", employeeDTO.EmployeeCode);
@@ -331,17 +331,29 @@ namespace BusinessLogicLayer.Service
                     command.Parameters.AddWithValue("@DesignationId", employeeDTO.DesignationId);
                     command.Parameters.AddWithValue("@DepartmentId", employeeDTO.DepartmentId);
                     command.Parameters.AddWithValue("@ApplicationUserId", employeeDTO.ApplicationUserId);
-                    connection.Open();
 
+                    // Define the output parameter to capture the newly created EmployeeId
+                    var outputIdParam = new SqlParameter("@NewEmployeeId", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(outputIdParam);
+
+                    connection.Open();
                     var result = await command.ExecuteNonQueryAsync();
+
                     if (result > 0)
                     {
-                        return new GeneralResponse(true, "Employee inserted successfully");
+                        // Retrieve the output parameter value
+                        int newEmployeeId = (int)outputIdParam.Value;
+                        return new GeneralResponseSingle(true, $"Employee inserted successfully with ID: {newEmployeeId}", newEmployeeId);
                     }
-                    return new GeneralResponse(false, "Employee insertion failed");
+
+                    return new GeneralResponseSingle(false, "Employee insertion failed");
                 }
             }
         }
+
 
         public async Task<ServiceResponse.GeneralResponse> UpdateEmployee( int id ,EmployeeDTO employeeDTO)
         {

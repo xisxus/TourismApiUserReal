@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.Contacts;
 using DataAccessLayer.DTOs;
+using DataAccessLayer.Entites.Employees;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -27,7 +28,7 @@ namespace BusinessLogicLayer.Service
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("SP_InsertEmployeeSalary", connection))
+                using (var command = new SqlCommand("SP_InsertEmployeeSalary1", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@EmployeeId", employeeSalariesDTO.EmployeeId);
@@ -55,7 +56,7 @@ namespace BusinessLogicLayer.Service
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("SP_UpdateEmployeeSalary", connection))
+                using (var command = new SqlCommand("SP_UpdateEmployeeSalary1", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@SalaryId", employeeSalariesDTO.SalaryId);
@@ -75,14 +76,14 @@ namespace BusinessLogicLayer.Service
             }
         }
 
-        public async Task<GeneralResponse> DeleteEmployeeSalary(int salaryId)
+        public async Task<GeneralResponse> DeleteEmployeeSalary(int EmployeeId)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("SP_DeleteEmployeeSalary", connection))
+                using (var command = new SqlCommand("SP_DeleteEmployeeSalary1", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@SalaryId", salaryId);
+                    command.Parameters.AddWithValue("@EmployeeId", EmployeeId);
                     connection.Open();
                     var result = await command.ExecuteNonQueryAsync();
                     return result > 0
@@ -96,7 +97,7 @@ namespace BusinessLogicLayer.Service
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("SP_GetAllEmployeeSalaries", connection))
+                using (var command = new SqlCommand("SP_GetAllEmployeeSalaries1", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     connection.Open();
@@ -129,14 +130,14 @@ namespace BusinessLogicLayer.Service
             }
         }
 
-        public async Task<GeneralResponseData<EmployeeSalariesDTO>> GetEmployeeSalaryById(int salaryId)
+        public async Task<GeneralResponseData<EmployeeSalariesDTO>> GetEmployeeSalaryById(int EmployeeId)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("SP_GetEmployeeSalaryById", connection))
+                using (var command = new SqlCommand("SP_GetEmployeeSalaryById1", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@SalaryId", salaryId);
+                    command.Parameters.AddWithValue("@EmployeeId", EmployeeId);
                     connection.Open();
                     var reader = await command.ExecuteReaderAsync();
                     if (await reader.ReadAsync())

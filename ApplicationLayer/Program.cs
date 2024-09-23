@@ -57,15 +57,16 @@ builder.Services.AddSwaggerGen(options =>
     });
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
-builder.Services.AddScoped<IUserAccount, AccountRepository>();
-builder.Services.AddScoped<IEmployee, EmployeeRepository>();
-builder.Services.AddScoped<IDepartment, DepartmentRepository>();
-builder.Services.AddScoped<IDesignation, DesignationRepository>();
-builder.Services.AddScoped<IEmpDept, EmpDeptRepository>();
 builder.Services.AddScoped<IEmployeeDocument, EmployeeDocumentRepository>();
 builder.Services.AddScoped<IEmployeeSalary, EmployeeSalaryRepository>();
 builder.Services.AddScoped<IEmployeeBank, EmployeeBankRepository>();
+builder.Services.AddScoped<IDesignation, DesignationRepository>();
+builder.Services.AddScoped<IDepartment, DepartmentRepository>();
+builder.Services.AddScoped<IUserAccount, AccountRepository>();
+builder.Services.AddScoped<IEmployee, EmployeeRepository>();
+builder.Services.AddScoped<IEmpDept, EmpDeptRepository>();
 builder.Services.AddScoped<IPerson, PersonRepository>();
+builder.Services.AddScoped<IGuide, GuideRepository>();
 
 
 builder.Services.AddCors(options =>

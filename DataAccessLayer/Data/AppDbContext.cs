@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Entites.Employees;
+﻿using DataAccessLayer.Entites;
+using DataAccessLayer.Entites.Employees;
 using DataAccessLayer.Entites.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -26,6 +27,9 @@ namespace DataAccessLayer.Data
 
         public DbSet<Person> People { get; set; }
         public DbSet<City> Cities { get; set; }
+        public DbSet<Guide> Guides { get; set; }
+        public DbSet<Package> Packages { get; set; }
+        public DbSet<PackageGuide> PackageGuides { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

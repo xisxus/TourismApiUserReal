@@ -4,6 +4,7 @@ using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240923165230_BankAndSalaryUpdate")]
+    partial class BankAndSalaryUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -301,92 +304,6 @@ namespace DataAccessLayer.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("EmployeeSalaries");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Entites.Guide", b =>
-                {
-                    b.Property<int>("GuideId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GuideId"));
-
-                    b.Property<string>("ApplicationUserID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("GuideAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("GuideCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("GuideName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("GuideId");
-
-                    b.HasIndex("ApplicationUserID");
-
-                    b.ToTable("Guides");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Entites.Package", b =>
-                {
-                    b.Property<int>("PackageId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PackageId"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("PackageId");
-
-                    b.ToTable("Packages");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Entites.PackageGuide", b =>
-                {
-                    b.Property<int>("PackageGuideId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PackageGuideId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("GuideId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PackageId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("PackageGuideId");
-
-                    b.HasIndex("GuideId");
-
-                    b.HasIndex("PackageId");
-
-                    b.ToTable("PackageGuides");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Entites.Users.ApplicationUser", b =>
@@ -776,36 +693,6 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entites.Guide", b =>
-                {
-                    b.HasOne("DataAccessLayer.Entites.Users.ApplicationUser", "ApplicationUser")
-                        .WithMany("Guides")
-                        .HasForeignKey("ApplicationUserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Entites.PackageGuide", b =>
-                {
-                    b.HasOne("DataAccessLayer.Entites.Guide", "Guide")
-                        .WithMany()
-                        .HasForeignKey("GuideId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataAccessLayer.Entites.Package", "Package")
-                        .WithMany()
-                        .HasForeignKey("PackageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Guide");
-
-                    b.Navigation("Package");
-                });
-
             modelBuilder.Entity("DataAccessLayer.Entites.Users.Person", b =>
                 {
                     b.HasOne("DataAccessLayer.Entites.Users.ApplicationUser", "ApplicationUser")
@@ -913,8 +800,6 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("DataAccessLayer.Entites.Users.ApplicationUser", b =>
                 {
                     b.Navigation("Employees");
-
-                    b.Navigation("Guides");
 
                     b.Navigation("People");
                 });

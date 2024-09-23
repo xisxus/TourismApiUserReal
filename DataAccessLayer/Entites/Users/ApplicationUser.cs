@@ -14,5 +14,6 @@ namespace DataAccessLayer.Entites.Users
 
         public ICollection<Employee> Employees { get; set; }
         public ICollection<Person> People { get; set; }
+        public ICollection<Guide> Guides { get; set; }
     }
 }

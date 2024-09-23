@@ -13,7 +13,7 @@ namespace DataAccessLayer.Contacts
     {
         Task<ServiceResponse.GeneralResponseData<List<EmployeeDTO>>> GetALlEmployee();
         Task<GeneralResponseData<EmployeeDTO>> GetEmployeeById(int employeeId);
-        Task<GeneralResponse> InsertEmployee(EmployeeDTO employeeDTO);
+        Task<ServiceResponse.GeneralResponseSingle> InsertEmployee(EmployeeDTO employeeDTO);
         Task<GeneralResponse> UpdateEmployee(int Id ,EmployeeDTO employeeDTO);
         Task<GeneralResponse> DeleteEmployee(int employeeId);
 

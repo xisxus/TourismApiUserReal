@@ -34,7 +34,7 @@ namespace BusinessLogicLayer.Service
 
                 foreach (var employeeBankDTO in employeeBankDTOs)
                 {
-                    using (var command = new SqlCommand("SP_InsertEmployeeBank", connection))
+                    using (var command = new SqlCommand("SP_InsertEmployeeBank1", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@EmployeeID", employeeBankDTO.EmployeeID);
@@ -69,7 +69,7 @@ namespace BusinessLogicLayer.Service
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("SP_InsertEmployeeBank", connection))
+                using (var command = new SqlCommand("SP_InsertEmployeeBank1", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@EmployeeID", employeeBankDTO.EmployeeID);
@@ -95,7 +95,7 @@ namespace BusinessLogicLayer.Service
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("SP_UpdateEmployeeBank", connection))
+                using (var command = new SqlCommand("SP_UpdateEmployeeBank1", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@EmployeeBankID", employeeBankDTO.EmployeeBankID);
@@ -113,14 +113,14 @@ namespace BusinessLogicLayer.Service
             }
         }
 
-        public async Task<GeneralResponse> DeleteEmployeeBank(int employeeBankID)
+        public async Task<GeneralResponse> DeleteEmployeeBank(int employeeID)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("SP_DeleteEmployeeBank", connection))
+                using (var command = new SqlCommand("SP_DeleteEmployeeBank1", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@EmployeeBankID", employeeBankID);
+                    command.Parameters.AddWithValue("@EmployeeID", employeeID);
                     connection.Open();
                     var result = await command.ExecuteNonQueryAsync();
                     return result > 0
@@ -134,7 +134,7 @@ namespace BusinessLogicLayer.Service
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("SP_GetAllEmployeeBanks", connection))
+                using (var command = new SqlCommand("SP_GetAllEmployeeBanks1", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     connection.Open();
@@ -165,14 +165,14 @@ namespace BusinessLogicLayer.Service
             }
         }
 
-        public async Task<GeneralResponseData<EmployeeBankDTO>> GetEmployeeBankById(int employeeBankID)
+        public async Task<GeneralResponseData<EmployeeBankDTO>> GetEmployeeBankById(int employeeID)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                using (var command = new SqlCommand("SP_GetEmployeeBankById", connection))
+                using (var command = new SqlCommand("SP_GetEmployeeBankById1", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@EmployeeBankID", employeeBankID);
+                    command.Parameters.AddWithValue("@EmployeeID", employeeID);
                     connection.Open();
                     var reader = await command.ExecuteReaderAsync();
                     if (await reader.ReadAsync())
