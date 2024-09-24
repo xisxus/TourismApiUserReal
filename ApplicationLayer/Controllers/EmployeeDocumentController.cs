@@ -19,54 +19,54 @@ namespace ApplicationLayer.Controllers
             _env = env;
         }
 
-        //[HttpPost("UploadDocument")]
-        //public async Task<IActionResult> UploadDocuments(  [FromForm] List<DocumentUploadRequest> requests)
-        //{
-        //    if (requests == null || requests.Count == 0)
-        //        return BadRequest("No documents uploaded.");
+        [HttpPost("UploadDocument")]
+        public async Task<IActionResult> UploadDocuments([FromForm]List<DocumentUploadRequest> requests)
+        {
+            if (requests == null || requests.Count == 0)
+                return BadRequest("No documents uploaded.");
 
-        //    var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
-        //    if (!Directory.Exists(uploadsFolder))
-        //    {
-        //        Directory.CreateDirectory(uploadsFolder);
-        //    }
+            var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
 
-        //    var uploadedDocuments = new List<EmployeeDocumentDTO>();
+            var uploadedDocuments = new List<EmployeeDocumentDTO>();
 
-        //    foreach (var request in requests)
-        //    {
-        //        if (request.File == null || request.File.Length == 0)
-        //            continue; // Skip empty files
+            foreach (var request in requests)
+            {
+                if (request.File == null || request.File.Length == 0)
+                    continue; // Skip empty files
 
-        //        var filePath = Path.Combine(uploadsFolder, request.File.FileName);
+                var filePath = Path.Combine(uploadsFolder, request.File.FileName);
 
-        //        using (var stream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            await request.File.CopyToAsync(stream);
-        //        }
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await request.File.CopyToAsync(stream);
+                }
 
-        //        var documentDTO = new EmployeeDocumentDTO
-        //        {
-        //            EmployeeId = request.EmployeeId, // Now taken from the request DTO
-        //            DocumentUrl = Path.Combine("uploads", request.File.FileName), // Store the relative path
-        //            DocumentType = request.DocumentType, // Use the corresponding document type
-        //            Description = request.Description, // Use the corresponding description
-        //            CreatedAt = DateTime.Now,
-        //            UpdatedAt = DateTime.Now,
-        //            IsDeleted = false
-        //        };
+                var documentDTO = new EmployeeDocumentDTO
+                {
+                    EmployeeId = request.EmployeeId, // Now taken from the request DTO
+                    DocumentUrl = Path.Combine("uploads", request.File.FileName), // Store the relative path
+                    DocumentType = request.DocumentType, // Use the corresponding document type
+                    Description = request.Description, // Use the corresponding description
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                    IsDeleted = false
+                };
 
-        //        uploadedDocuments.Add(documentDTO);
-        //    }
+                uploadedDocuments.Add(documentDTO);
+            }
 
-        //    // Insert all documents into the database
-        //    foreach (var document in uploadedDocuments)
-        //    {
-        //        await _repository.InsertEmployeeDocument(document);
-        //    }
+            // Insert all documents into the database
+            foreach (var document in uploadedDocuments)
+            {
+                await _repository.InsertEmployeeDocument(document);
+            }
 
-        //    return Ok("Documents uploaded successfully.");
-        //}
+            return Ok("Documents uploaded successfully.");
+        }
 
 
 

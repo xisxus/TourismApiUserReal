@@ -3,6 +3,7 @@ using DataAccessLayer.Contacts;
 using DataAccessLayer.Data;
 using DataAccessLayer.Entites.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -57,6 +58,16 @@ builder.Services.AddSwaggerGen(options =>
     });
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
+
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 52428800; // 50 MB
+});
+
+
+
+
 builder.Services.AddScoped<IEmployeeDocument, EmployeeDocumentRepository>();
 builder.Services.AddScoped<IEmployeeSalary, EmployeeSalaryRepository>();
 builder.Services.AddScoped<IEmployeeBank, EmployeeBankRepository>();
