@@ -53,19 +53,19 @@ namespace BusinessLogicLayer.Service
                         else
                         {
                             // Handle failure for individual insertions if necessary
-                            return new ServiceResponse.GeneralResponseData<List<EmployeeBankDTO>>(false, "Some bank details insertion failed", null);
+                            return new ServiceResponse.GeneralResponseData<List<EmployeeBankDTO>>(false, "nourl", null);
                         }
                     }
                 }
             }
 
-            return new ServiceResponse.GeneralResponseData<List<EmployeeBankDTO>>(true, "All bank details inserted successfully", insertedBanks);
+            return new ServiceResponse.GeneralResponseData<List<EmployeeBankDTO>>(true, "url", insertedBanks);
         }
 
 
 
 
-        public async Task<GeneralResponse> InsertEmployeeBank(EmployeeBankDTO employeeBankDTO)
+        public async Task<GeneralResponseSingle> InsertEmployeeBank(EmployeeBankDTO employeeBankDTO)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -80,8 +80,8 @@ namespace BusinessLogicLayer.Service
                     connection.Open();
                     var result = await command.ExecuteNonQueryAsync();
                     return result > 0
-                        ? new GeneralResponse(true, "Employee bank details inserted successfully")
-                        : new GeneralResponse(false, "Employee bank insertion failed");
+                        ? new GeneralResponseSingle(true, "Url", employeeBankDTO.EmployeeID)
+                        : new GeneralResponseSingle(false, "Employee bank insertion failed");
                 }
             }
         }
@@ -107,7 +107,7 @@ namespace BusinessLogicLayer.Service
                     connection.Open();
                     var result = await command.ExecuteNonQueryAsync();
                     return result > 0
-                        ? new GeneralResponse(true, "Employee bank details updated successfully")
+                        ? new GeneralResponse(true, "url")
                         : new GeneralResponse(false, "Employee bank update failed");
                 }
             }

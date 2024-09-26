@@ -346,10 +346,12 @@ namespace BusinessLogicLayer.Service
                     {
                         // Retrieve the output parameter value
                         int newEmployeeId = (int)outputIdParam.Value;
-                        return new GeneralResponseSingle(true, $"Employee inserted successfully with ID: {newEmployeeId}", newEmployeeId);
+                        return new GeneralResponseSingle(true,"getemployee" , newEmployeeId);
                     }
 
                     return new GeneralResponseSingle(false, "Employee insertion failed");
+
+                    //$"Employee inserted successfully with ID: {newEmployeeId}"
                 }
             }
         }
